@@ -120,6 +120,7 @@ obj-$(CONFIG_VIDEO_IMX290)	+= imx290.o
 obj-$(CONFIG_VIDEO_IMX319)	+= imx319.o
 obj-$(CONFIG_VIDEO_IMX355)	+= imx355.o
 obj-$(CONFIG_VIDEO_MAX9286)	+= max9286.o
+obj-$(CONFIG_NV_VIDEO_VC_MIPI) += vc_mipi_camera.o vc_mipi_core.o vc_mipi_modules.o
 rdacm20-camera_module-objs	:= rdacm20.o max9271.o
 obj-$(CONFIG_VIDEO_RDACM20)	+= rdacm20-camera_module.o
 obj-$(CONFIG_VIDEO_ST_MIPID02) += st-mipid02.o

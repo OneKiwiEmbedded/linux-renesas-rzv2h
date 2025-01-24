@@ -825,6 +825,18 @@ config VIDEO_IMX355
 	  To compile this driver as a module, choose M here: the
 	  module will be called imx355.
 
+config NV_VIDEO_VC_MIPI
+	tristate "Vision Components MIPI CSI-2 camera sensor support"
+	depends on I2C && VIDEO_V4L2
+	select MEDIA_CONTROLLER
+	select VIDEO_V4L2_SUBDEV_API
+	help
+	  This is a Video4Linux2 sensor driver for the Vision Components
+	  MIPI CSI-2 camera sensor, for use with the tegra isp.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called vc_mipi.
+
 config VIDEO_OV2640
 	tristate "OmniVision OV2640 sensor support"
 	depends on VIDEO_V4L2 && I2C
