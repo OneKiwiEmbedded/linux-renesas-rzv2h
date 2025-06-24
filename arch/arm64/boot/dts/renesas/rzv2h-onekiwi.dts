@@ -64,14 +64,14 @@
 
 	aliases {
 		serial0 = &scif0;
-		serial1 = &sci0;
-		serial2 = &sci4;
-		serial3 = &sci5;
+		//serial1 = &sci0;
+		//serial2 = &sci4;
+		//serial3 = &sci5;
 		mmc0 = &sdhi0;
 		mmc1 = &sdhi1;
 		mmc2 = &sdhi2;
-		ethernet0 = &eth0;
-		ethernet1 = &eth1;
+		//ethernet0 = &eth0;
+		//ethernet1 = &eth1;
 	};
 
 	chosen {
@@ -237,17 +237,6 @@
 		states = <3300000 0 1800000 1>;
 	};
 
-	hdmi-out {
-		compatible = "hdmi-connector";
-		type = "d";
-
-		port {
-			hdmi_con_out: endpoint {
-				remote-endpoint = <&adv7535_out>;
-			};
-		};
-	};
-
 	clk_ext_camera: clk_ext_camera {
 		compatible = "fixed-clock";
 		#clock-cells = <0>;
@@ -296,60 +285,6 @@
 	};
 #endif
 
-	snd_rzv2h: sound {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		compatible = "simple-audio-card";
-		simple-audio-card,name = "rsnd_rzv2h";
-		status="okay";
-
-		ssi_link: simple-audio-card,dai-link@0 {
-			format = "i2s";
-			reg = <0>;
-			bitclock-master = <&cpu_dai0>;
-			frame-master = <&cpu_dai0>;
-			mclk-fs = <256>;
-
-			cpu_dai0: cpu {
-				sound-dai = <&rcar_sound 0>;
-			};
-
-			codec {
-				sound-dai = <&da7212>;
-				clocks = <&rcar_sound>;
-			};
-		};
-
-#if (!SEL_CAN01_HEADER)
-		spdif_link0: simple-audio-card,dai-link@1 {
-			reg = <1>;
-			bitclock-master = <&cpu_dai1>;
-			frame-master = <&cpu_dai1>;
-
-			cpu_dai1: cpu {
-				sound-dai = <&rcar_sound 1>;
-			};
-
-			codec {
-				sound-dai = <&codec_test0>;
-			};
-		};
-
-		spdif_link1: simple-audio-card,dai-link@2 {
-			reg = <1>;
-			bitclock-master = <&cpu_dai2>;
-			frame-master = <&cpu_dai2>;
-
-			cpu_dai2: cpu {
-				sound-dai = <&rcar_sound 2>;
-			};
-
-			codec {
-				sound-dai = <&codec_test1>;
-			};
-		};
-#endif
-	};
 };
 
 &audio_clka {
@@ -555,21 +490,6 @@
 	status = "okay";
 };
 
-#if (SEL_CAN01_HEADER && SEL_SCI4_CAN01)
-&sci4 {
-	pinctrl-0 = <&sci4_pins>;
-	pinctrl-names = "default";
-
-	uart-has-rtscts;
-	status = "okay";
-};
-#endif
-
-&sci5 {
-	pinctrl-0 = <&sci5_pins>;
-	pinctrl-names = "default";
-	status = "okay";
-};
 
 &sdhi0 {
 	vmmc-supply = <&reg_3p3v>;
@@ -604,275 +524,11 @@
 	status = "okay";
 };
 
-&eth0 {
-	phy-handle = <&phy0>;
-	phy-mode = "rgmii-id";
-	status = "okay";
-
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		phy0: ethernet-phy@0 {
-			compatible = "ethernet-phy-id0022.1640",
-				     "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
-			rxc-skew-psec = <1400>;
-			txc-skew-psec = <1400>;
-			rxdv-skew-psec = <0>;
-			txdv-skew-psec = <0>;
-			rxd0-skew-psec = <0>;
-			rxd1-skew-psec = <0>;
-			rxd2-skew-psec = <0>;
-			rxd3-skew-psec = <0>;
-			txd0-skew-psec = <0>;
-			txd1-skew-psec = <0>;
-			txd2-skew-psec = <0>;
-			txd3-skew-psec = <0>;
-		};
-	};
-};
-
-&eth1 {
-	phy-handle = <&phy1>;
-	phy-mode = "rgmii-id";
-	status = "okay";
-
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		phy1: ethernet-phy@0 {
-			compatible = "ethernet-phy-id0022.1640",
-				     "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
-			rxc-skew-psec = <1400>;
-			txc-skew-psec = <1400>;
-			rxdv-skew-psec = <0>;
-			txdv-skew-psec = <0>;
-			rxd0-skew-psec = <0>;
-			rxd1-skew-psec = <0>;
-			rxd2-skew-psec = <0>;
-			rxd3-skew-psec = <0>;
-			txd0-skew-psec = <0>;
-			txd1-skew-psec = <0>;
-			txd2-skew-psec = <0>;
-			txd3-skew-psec = <0>;
-		};
-	};
-};
-
-&i2c0 {
-	pinctrl-0 = <&i2c0_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	ov5645_csi20: ov5645_csi20@3c {
-		compatible = "ovti,ov5645";
-		reg = <0x3c>;
-		clock-names = "xclk";
-		clocks = <&clk_ext_camera>;
-		clock-frequency = <24000000>;
-		vdddo-supply = <&ov5645_vdddo_1v8>;
-		vdda-supply = <&ov5645_vdda_2v8>;
-		vddd-supply = <&ov5645_vddd_1v5>;
-		/* Set dummy enable gpio */
-		enable-gpios = <&pinctrl RZG2L_GPIO(1, 6) GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(6, 4) GPIO_ACTIVE_LOW>;
-
-		port {
-			ov5645_to_csi20: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&csi20_in>;
-			};
-		};
-	};
-};
-
-&i2c1 {
-	pinctrl-0 = <&i2c1_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	ov5645_csi21: ov5645_csi21@3c {
-		compatible = "ovti,ov5645";
-		reg = <0x3c>;
-		clock-names = "xclk";
-		clocks = <&clk_ext_camera>;
-		clock-frequency = <24000000>;
-		vdddo-supply = <&ov5645_vdddo_1v8>;
-		vdda-supply = <&ov5645_vdda_2v8>;
-		vddd-supply = <&ov5645_vddd_1v5>;
-		/* Set dummy enable gpio */
-		enable-gpios = <&pinctrl RZG2L_GPIO(1, 7) GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(6, 5) GPIO_ACTIVE_LOW>;
-
-		port {
-			ov5645_to_csi21: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&csi21_in>;
-			};
-		};
-	};
-};
-
-&i2c2 {
-	pinctrl-0 = <&i2c2_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	da7212: codec@1a {
-		compatible = "dlg,da7212";
-		#sound-dai-cells = <0>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		reg = <0x1a>;
-
-		clocks = <&rcar_sound>;
-		clock-names = "mclk";
-
-		dlg,micbias1-lvl = <2500>;
-		dlg,micbias2-lvl = <2500>;
-		dlg,dmic-data-sel = "lrise_rfall";
-		dlg,dmic-samplephase = "between_clkedge";
-		dlg,dmic-clkrate = <3000000>;
-
-		VDDA-supply = <&reg_1p8v>;
-		VDDSP-supply = <&reg_3p3v>;
-		VDDMIC-supply = <&reg_3p3v>;
-		VDDIO-supply = <&reg_1p8v>;
-	};
-};
-
-&i2c3 {
-	pinctrl-0 = <&i2c3_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	adv7535: hdmi@3d {
-		compatible = "adi,adv7535";
-		reg = <0x3d>;
-
-		avdd-supply = <&reg_1p8v>;
-		dvdd-supply = <&reg_1p8v>;
-		pvdd-supply = <&reg_1p8v>;
-		a2vdd-supply = <&reg_1p8v>;
-		v3p3-supply = <&reg_3p3v>;
-		v1p2-supply = <&reg_1p8v>;
-
-		interrupt-parent = <&pinctrl>;
-		interrupts = <RZG2L_GPIO(7, 1) IRQ_TYPE_LEVEL_LOW>;
-
-		adi,dsi-lanes = <4>;
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-				adv7535_in: endpoint@0 {
-					remote-endpoint = <&dsi0_out>;
-				};
-			};
-
-			port@1 {
-				reg = <1>;
-				adv7535_out: endpoint@1 {
-				remote-endpoint = <&hdmi_con_out>;
-				};
-			};
-		};
-	};
-};
-
-&i2c6 {
-	pinctrl-0 = <&i2c6_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	ov5645_csi22: ov5645_csi22@3c {
-		compatible = "ovti,ov5645";
-		reg = <0x3c>;
-		clock-names = "xclk";
-		clocks = <&clk_ext_camera>;
-		clock-frequency = <24000000>;
-		vdddo-supply = <&ov5645_vdddo_1v8>;
-		vdda-supply = <&ov5645_vdda_2v8>;
-		vddd-supply = <&ov5645_vddd_1v5>;
-		enable-gpios = <&pinctrl RZG2L_GPIO(6, 1) GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(9, 2) GPIO_ACTIVE_LOW>;
-
-		port {
-			ov5645_to_csi22: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&csi22_in>;
-			};
-		};
-	};
-};
-
-&i2c7 {
-	pinctrl-0 = <&i2c7_pins>;
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	ov5645_csi23: ov5645_csi23@3c {
-		compatible = "ovti,ov5645";
-		reg = <0x3c>;
-		clock-names = "xclk";
-		clocks = <&clk_ext_camera>;
-		clock-frequency = <24000000>;
-		vdddo-supply = <&ov5645_vdddo_1v8>;
-		vdda-supply = <&ov5645_vdda_2v8>;
-		vddd-supply = <&ov5645_vddd_1v5>;
-		enable-gpios = <&pinctrl RZG2L_GPIO(6, 0) GPIO_ACTIVE_HIGH>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(9, 3) GPIO_ACTIVE_LOW>;
-
-		port {
-			ov5645_to_csi23: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&csi23_in>;
-			};
-		};
-	};
-};
-
 &i2c8 {
 	pinctrl-0 = <&i2c8_pins>;
 	pinctrl-names = "default";
 
 	status = "okay";
-
-	versa3: versa3@69 {
-		compatible = "renesas,5p35023";
-		reg = <0x69>;
-		#clock-cells = <1>;
-		clocks = <&x1_clk>;
-		clock-names = "x1";
-		otp-burned;
-		32kHz-free-running;
-
-		assigned-clocks = <&versa3 0>,
-				  <&versa3 1>,
-				  <&versa3 2>,
-				  <&versa3 3>,
-				  <&versa3 4>,
-				  <&versa3 5>;
-		assigned-clock-rates =  <100000000>, <100000000>,
-					<22579200>, <32768>,
-					<24576000>, <24000000>;
-		clock-divider-read-only = <1>, <1>, <1>, <1>, <1>;
-		clock-flags = <2176>, <2176>, <2176>, <2052>, <2176>, <2048>;
-	};
 };
 
 &du {
@@ -881,15 +537,6 @@
 
 &dsi0 {
 	status = "okay";
-
-	ports {
-		port@1 {
-			dsi0_out: endpoint {
-				remote-endpoint = <&adv7535_in>;
-				data-lanes = <1 2 3 4>;
-			};
-		};
-	};
 };
 
 &cru0 {
@@ -898,16 +545,6 @@
 
 &csi20 {
 	status = "okay";
-
-	ports {
-		port {
-			csi20_in: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&ov5645_to_csi20>;
-			};
-		};
-	};
 };
 
 &cru1 {
@@ -916,16 +553,6 @@
 
 &csi21 {
 	status = "okay";
-
-	ports {
-		port {
-			csi21_in: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&ov5645_to_csi21>;
-			};
-		};
-	};
 };
 
 &cru2 {
@@ -934,16 +561,6 @@
 
 &csi22 {
 	status = "okay";
-
-	ports {
-		port {
-			csi22_in: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&ov5645_to_csi22>;
-			};
-		};
-	};
 };
 
 &cru3 {
@@ -952,32 +569,22 @@
 
 &csi23 {
 	status = "okay";
-
-	ports {
-		port {
-			csi23_in: endpoint {
-				clock-lanes = <0>;
-				data-lanes = <1 2>;
-				remote-endpoint = <&ov5645_to_csi23>;
-			};
-		};
-	};
 };
 
 &xhci0 {
-		pinctrl-0 = <&usb30_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb30_pins>;
+	pinctrl-names = "default";
 
-		memory-region = <&global_cma>;
-		status = "okay";
+	memory-region = <&global_cma>;
+	status = "okay";
 };
 
 &xhci1 {
-		pinctrl-0 = <&usb31_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb31_pins>;
+	pinctrl-names = "default";
 
-		memory-region = <&global_cma>;
-		status = "okay";
+	memory-region = <&global_cma>;
+	status = "okay";
 };
 
 &usb20phyrst {
@@ -989,78 +596,55 @@
 };
 
 &ohci0 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &ohci1 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		status = "okay";
+	status = "okay";
 };
 
 &ehci0 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &ehci1 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		status = "okay";
+	status = "okay";
 };
 
 &hsusb {
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &usb2_phy0 {
-		pinctrl-0 = <&usb20_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb20_pins>;
+	pinctrl-names = "default";
 
-		status = "okay";
+	status = "okay";
 };
 
 &usb2_phy1 {
-		pinctrl-0 = <&usb21_pins>;
-		pinctrl-names = "default";
-
-		status = "okay";
-};
-
-#if (SEL_CAN01_HEADER && !SEL_SCI4_CAN01)
-&canfd {
-	pinctrl-0 = <&can0_pins &can1_pins>;
+	pinctrl-0 = <&usb21_pins>;
 	pinctrl-names = "default";
+
 	status = "okay";
-
-	channel0 {
-		status = "okay";
-	};
-
-	channel1 {
-		status = "okay";
-	};
 };
-#endif
 
 &rtc {
 	status = "okay";
 };
 
 &wdt1 {
-	status = "okay";
-};
-
-&spi2 {
-	pinctrl-0 = <&spi2_pins>;
-	pinctrl-names = "default";
-
 	status = "okay";
 };
 
@@ -1104,47 +688,6 @@
 			};
 		};
 	};
-};
-
-&rcar_sound {
-#if (!SEL_CAN01_HEADER)
-	pinctrl-0 = <&sound_clk_pins &sound_pins &spdif0_pins &spdif2_pins>;
-#else
-	pinctrl-0 = <&sound_clk_pins &sound_pins>;
-#endif
-	pinctrl-names = "default";
-
-	status = "okay";
-
-	/* audio_clkout */
-	#clock-cells = <0>;
-	clock-frequency = <11289600>;
-
-	/* Multi DAI */
-	#sound-dai-cells = <1>;
-
-	rcar_sound,dai {
-		dai0 {
-			playback = <&ssi3>;
-			capture  = <&ssi4 &src0 &dvc0>;
-		};
-
-#if (!SEL_CAN01_HEADER)
-		dai1 {
-			playback = <&spdif0>;
-			capture  = <&spdif0>;
-		};
-
-		dai2 {
-			playback = <&spdif2>;
-			capture  = <&spdif2>;
-		};
-#endif
-	};
-};
-
-&ssi4 {
-	shared-pin;
 };
 
 &pcie0 {
