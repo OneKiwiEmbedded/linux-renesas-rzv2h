@@ -224,6 +224,7 @@
 		states = <3300000 0 1800000 1>;
 	};
 
+	/*
 	hdmi-out {
 		compatible = "hdmi-connector";
 		type = "d";
@@ -233,7 +234,7 @@
 				remote-endpoint = <&adv7535_out>;
 			};
 		};
-	};
+	};*/
 
 	clk_ext_camera: clk_ext_camera {
 		compatible = "fixed-clock";
@@ -444,23 +445,22 @@
 			 <RZG2L_PORT_PINMUX(0, 7, 1)>; /* I2C8_SCL */
 	};
 
-	usb30_pins: usb30 {
-		pinmux = <RZG2L_PORT_PINMUX(11, 0, 14)>; /* VBUS */
-	};
-
-	usb31_pins: usb31 {
-		pinmux = <RZG2L_PORT_PINMUX(6, 2, 14)>; /* VBUS */
-	};
-
 	usb20_pins: usb20 {
-		pinmux = <RZG2L_PORT_PINMUX(9, 5, 14)>, /* VBUS */
-			 <RZG2L_PORT_PINMUX(9, 6, 14)>; /* OVC */
-	};
-
-	usb21_pins: usb21 {
-		pinmux = <RZG2L_PORT_PINMUX(6, 6, 14)>, /* VBUS */
-			 <RZG2L_PORT_PINMUX(6, 7, 14)>; /* OVC */
-	};
+        pinmux = <RZG2L_PORT_PINMUX(6,1,15)>, /* USB20_OVRCURN */
+                 <RZG2L_PORT_PINMUX(6,0,15)>; /* USB20_VBUSEN */
+    };
+    usb21_pins: usb21 {
+        pinmux = <RZG2L_PORT_PINMUX(6,3,15)>, /* USB21_OVRCURN */
+                 <RZG2L_PORT_PINMUX(6,2,15)>; /* USB21_VBUSEN */
+    };
+    usb30_pins: usb30 {
+        pinmux = <RZG2L_PORT_PINMUX(6,5,15)>, /* USB30_OVRCURN */
+                 <RZG2L_PORT_PINMUX(6,4,15)>; /* USB30_VBUSEN */
+    };
+    usb31_pins: usb31 {
+        pinmux = <RZG2L_PORT_PINMUX(6,7,15)>, /* USB31_OVRCURN */
+                 <RZG2L_PORT_PINMUX(6,6,15)>; /* USB31_VBUSEN */
+    };
 
 	spi2_pins: spi2 {
 		pinmux = <RZG2L_PORT_PINMUX(11, 3, 5)>, /* MISO */
@@ -624,6 +624,7 @@
 
 	status = "okay";
 
+	/*
 	ov5645_csi20: ov5645_csi20@3c {
 		compatible = "ovti,ov5645";
 		reg = <0x3c>;
@@ -633,7 +634,7 @@
 		vdddo-supply = <&ov5645_vdddo_1v8>;
 		vdda-supply = <&ov5645_vdda_2v8>;
 		vddd-supply = <&ov5645_vddd_1v5>;
-		/* Set dummy enable gpio */
+		// Set dummy enable gpio
 		enable-gpios = <&pinctrl RZG2L_GPIO(1, 6) GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&pinctrl RZG2L_GPIO(6, 4) GPIO_ACTIVE_LOW>;
 
@@ -644,7 +645,7 @@
 				remote-endpoint = <&csi20_in>;
 			};
 		};
-	};
+	};*/
 };
 
 &i2c1 {
@@ -653,6 +654,7 @@
 
 	status = "okay";
 
+	/*
 	ov5645_csi21: ov5645_csi21@3c {
 		compatible = "ovti,ov5645";
 		reg = <0x3c>;
@@ -662,7 +664,7 @@
 		vdddo-supply = <&ov5645_vdddo_1v8>;
 		vdda-supply = <&ov5645_vdda_2v8>;
 		vddd-supply = <&ov5645_vddd_1v5>;
-		/* Set dummy enable gpio */
+		// Set dummy enable gpio
 		enable-gpios = <&pinctrl RZG2L_GPIO(1, 7) GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&pinctrl RZG2L_GPIO(6, 5) GPIO_ACTIVE_LOW>;
 
@@ -673,7 +675,7 @@
 				remote-endpoint = <&csi21_in>;
 			};
 		};
-	};
+	};*/
 };
 
 &i2c2 {
@@ -712,6 +714,7 @@
 
 	status = "okay";
 
+	/*
 	adv7535: hdmi@3d {
 		compatible = "adi,adv7535";
 		reg = <0x3d>;
@@ -746,7 +749,7 @@
 				};
 			};
 		};
-	};
+	};*/
 };
 
 &i2c6 {
@@ -755,6 +758,7 @@
 
 	status = "okay";
 
+	/*
 	ov5645_csi22: ov5645_csi22@3c {
 		compatible = "ovti,ov5645";
 		reg = <0x3c>;
@@ -774,7 +778,7 @@
 				remote-endpoint = <&csi22_in>;
 			};
 		};
-	};
+	};*/
 };
 
 &i2c7 {
@@ -783,6 +787,7 @@
 
 	status = "okay";
 
+	/*
 	ov5645_csi23: ov5645_csi23@3c {
 		compatible = "ovti,ov5645";
 		reg = <0x3c>;
@@ -802,7 +807,7 @@
 				remote-endpoint = <&csi23_in>;
 			};
 		};
-	};
+	};*/
 };
 
 &i2c8 {
@@ -841,7 +846,7 @@
 
 &dsi0 {
 	status = "okay";
-
+	/*
 	ports {
 		port@1 {
 			dsi0_out: endpoint {
@@ -849,7 +854,7 @@
 				data-lanes = <1 2 3 4>;
 			};
 		};
-	};
+	};*/
 };
 
 &cru0 {
@@ -858,7 +863,7 @@
 
 &csi20 {
 	status = "okay";
-
+	/*
 	ports {
 		port {
 			csi20_in: endpoint {
@@ -867,7 +872,7 @@
 				remote-endpoint = <&ov5645_to_csi20>;
 			};
 		};
-	};
+	};*/
 };
 
 &cru1 {
@@ -876,7 +881,7 @@
 
 &csi21 {
 	status = "okay";
-
+	/*
 	ports {
 		port {
 			csi21_in: endpoint {
@@ -885,7 +890,7 @@
 				remote-endpoint = <&ov5645_to_csi21>;
 			};
 		};
-	};
+	};*/
 };
 
 &cru2 {
@@ -894,7 +899,7 @@
 
 &csi22 {
 	status = "okay";
-
+	/*
 	ports {
 		port {
 			csi22_in: endpoint {
@@ -903,7 +908,7 @@
 				remote-endpoint = <&ov5645_to_csi22>;
 			};
 		};
-	};
+	};*/
 };
 
 &cru3 {
@@ -913,6 +918,7 @@
 &csi23 {
 	status = "okay";
 
+	/*
 	ports {
 		port {
 			csi23_in: endpoint {
@@ -921,7 +927,7 @@
 				remote-endpoint = <&ov5645_to_csi23>;
 			};
 		};
-	};
+	};*/
 };
 
 &xhci0 {
