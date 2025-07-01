@@ -51,12 +51,12 @@
  *	1: SCI4		0: CAN0/1
  */
 
-#define SEL_CAN01_HEADER	1
-#define SEL_SCI4_CAN01		0
+//#define SEL_CAN01_HEADER	1
+//#define SEL_SCI4_CAN01		0
 
-#if (!SEL_CAN01_HEADER && SEL_SCI4_CAN01)
-#error "Cannot set 1 to SEL_SCI4_CAN01 as SEL_CAN01_HEADER=0"
-#endif
+//#if (!SEL_CAN01_HEADER && SEL_SCI4_CAN01)
+//#error "Cannot set 1 to SEL_SCI4_CAN01 as SEL_CAN01_HEADER=0"
+//#endif
 
 / {
 	model = "OneKiwi RZ/V2H SOM based on r9a09g057h4";
@@ -100,7 +100,7 @@
 
 	memory@240000000 {
 		device_type = "memory";
-		reg = <0x2 0x40000000 0x1 0x00000000>; // 4GB - 128MB - 384MB = ~3.5GB
+		reg = <0x2 0x40000000 0x1 0x00000000>;
 	};
 
 	reserved-memory {
@@ -188,7 +188,7 @@
 		regulator-boot-on;
 		regulator-always-on;
 	};
-
+	/*
 	vmmc_sdhi0: regulator-vcc-sdhi0 {
 		compatible = "regulator-fixed";
 
@@ -198,8 +198,9 @@
 
 		gpios = <&pinctrl RZG2L_GPIO(10, 1) GPIO_ACTIVE_HIGH>;
 		enable-active-high;
-	};
+	};*/
 
+	/*
 	vccq_sdhi0: regulator-vccq-sdhi0 {
 		compatible = "regulator-gpio";
 
@@ -211,7 +212,7 @@
 
 		gpios-states = <0>;
 		states = <3300000 0 1800000 1>;
-	};
+	};*/
 
 	vmmc_sdhi1: regulator-vcc-sdhi1 {
 		compatible = "regulator-fixed";
@@ -285,6 +286,7 @@
 		clock-frequency = <24000000>;
 	};
 
+/*
 #if (!SEL_CAN01_HEADER)
 	codec_test0: codec_test {
 		compatible = "linux,snd-soc-dummy";
@@ -295,7 +297,7 @@
 		compatible = "linux,snd-soc-dummy";
 		#sound-dai-cells = <0>;
 	};
-#endif
+#endif*/
 	/*
 	snd_rzv2h: sound {
 		#address-cells = <1>;
@@ -537,6 +539,7 @@
 	status = "okay";
 };
 
+/*
 #if (SEL_CAN01_HEADER && SEL_SCI4_CAN01)
 &sci4 {
 	pinctrl-0 = <&sci4_pins>;
@@ -546,13 +549,26 @@
 	status = "okay";
 };
 #endif
+*/
 
+/*
 &sci5 {
 	pinctrl-0 = <&sci5_pins>;
 	pinctrl-names = "default";
 	status = "okay";
+};*/
+
+&sdhi0 {
+	vmmc-supply = <&reg_3p3v>;
+	vqmmc-supply = <&reg_1p8v>;
+	bus-width = <8>;
+	mmc-hs200-1_8v;
+	non-removable;
+	fixed-emmc-driver-type = <1>;
+	status = "okay";
 };
 
+/*
 &sdhi0 {
 	pinctrl-0 = <&sdhi0_pins>;
 	pinctrl-names = "default";
@@ -562,13 +578,14 @@
 	sd-uhs-sdr50;
 	sd-uhs-sdr104;
 	status = "okay";
-};
+};*/
 
 &sdhi1 {
 	pinctrl-0 = <&sdhi1_pins>;
 	pinctrl-names = "default";
 	vmmc-supply = <&vmmc_sdhi1>;
-	vqmmc-supply = <&vccq_sdhi1>;
+	//vqmmc-supply = <&vccq_sdhi1>;
+	vqmmc-supply = <&reg_3p3v>;
 	bus-width = <4>;
 	sd-uhs-sdr50;
 	sd-uhs-sdr104;
@@ -944,19 +961,19 @@
 };
 
 &xhci0 {
-		pinctrl-0 = <&usb30_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb30_pins>;
+	pinctrl-names = "default";
 
-		memory-region = <&global_cma>;
-		status = "okay";
+	memory-region = <&global_cma>;
+	status = "okay";
 };
 
 &xhci1 {
-		pinctrl-0 = <&usb31_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb31_pins>;
+	pinctrl-names = "default";
 
-		memory-region = <&global_cma>;
-		status = "okay";
+	memory-region = <&global_cma>;
+	status = "okay";
 };
 
 &usb20phyrst {
@@ -968,48 +985,48 @@
 };
 
 &ohci0 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &ohci1 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		status = "okay";
+	status = "okay";
 };
 
 &ehci0 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &ehci1 {
-		memory-region = <&global_cma>;
+	memory-region = <&global_cma>;
 
-		status = "okay";
+	status = "okay";
 };
 
 &hsusb {
-		dr_mode = "otg";
-		status = "okay";
+	dr_mode = "otg";
+	status = "okay";
 };
 
 &usb2_phy0 {
-		pinctrl-0 = <&usb20_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb20_pins>;
+	pinctrl-names = "default";
 
-		status = "okay";
+	status = "okay";
 };
 
 &usb2_phy1 {
-		pinctrl-0 = <&usb21_pins>;
-		pinctrl-names = "default";
+	pinctrl-0 = <&usb21_pins>;
+	pinctrl-names = "default";
 
-		status = "okay";
+	status = "okay";
 };
 
 #if (SEL_CAN01_HEADER && !SEL_SCI4_CAN01)
@@ -1085,6 +1102,7 @@
 	};
 };
 
+/*
 &rcar_sound {
 #if (!SEL_CAN01_HEADER)
 	pinctrl-0 = <&sound_clk_pins &sound_pins &spdif0_pins &spdif2_pins>;
@@ -1095,11 +1113,11 @@
 
 	status = "okay";
 
-	/* audio_clkout */
+	// audio_clkout
 	#clock-cells = <0>;
 	clock-frequency = <11289600>;
 
-	/* Multi DAI */
+	// Multi DAI
 	#sound-dai-cells = <1>;
 
 	rcar_sound,dai {
@@ -1120,7 +1138,7 @@
 		};
 #endif
 	};
-};
+};*/
 
 &ssi4 {
 	shared-pin;
