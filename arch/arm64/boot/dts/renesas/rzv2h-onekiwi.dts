@@ -127,7 +127,6 @@
 		regulator-name = "SDHI1 Vmmc";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-
 		gpios = <&pinctrl RZG2L_GPIO(10, 3) GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 	};
@@ -137,10 +136,8 @@
 		regulator-name = "SDHI1 VccQ";
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <3300000>;
-
-		gpios = <&pinctrl RZG2L_GPIO(10, 2) GPIO_ACTIVE_HIGH>;
-
-		gpios-states = <0>;
+		//gpios = <&pinctrl RZG2L_GPIO(10, 2) GPIO_ACTIVE_HIGH>;
+		gpios-states = <1>;
 		states = <3300000 0 1800000 1>;
 	};
 
@@ -233,8 +230,8 @@
 	pinctrl-0 = <&sdhi1_pins>;
 	pinctrl-names = "default";
 	vmmc-supply = <&vmmc_sdhi1>;
-	vqmmc-supply = <&reg_1p8v>;
-	//vqmmc-supply = <&vccq_sdhi1>;
+	vqmmc-supply = <&vccq_sdhi1>;
+	//vqmmc-supply = <&reg_1p8v>;
 	bus-width = <4>;
 	sd-uhs-sdr50;
 	sd-uhs-sdr104;
