@@ -146,6 +146,15 @@
 		#clock-cells = <0>;
 		clock-frequency = <24000000>;
 	};
+
+	udmabuf@0 {
+		compatible = "ikwzm,u-dma-buf";
+		device-name = "udmabuf0";
+		minor-number = <0>;
+		size = <0x4000000>; // 64MiB
+		dma-coherent;
+		memory-region = <&image_buf0>;
+	};
 };
 
 &audio_clka {
