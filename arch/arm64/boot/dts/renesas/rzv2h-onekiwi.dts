@@ -6,7 +6,7 @@
  */
 
 /dts-v1/;
-#include "r9a09g057.dtsi"
+#include "r9a09g057-onekiwi.dtsi"
 #include <dt-bindings/pinctrl/rzg2l-pinctrl.h>
 #include <dt-bindings/gpio/gpio.h>
 
@@ -469,5 +469,11 @@
 };
 
 &cmtw1 {
+	status = "okay";
+};
+
+&drpai0 {
+	memory-region = <&drp_reserved>;
+	image-memory-region = <&image_buf0>;
 	status = "okay";
 };
