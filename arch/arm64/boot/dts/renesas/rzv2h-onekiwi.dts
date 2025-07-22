@@ -213,8 +213,8 @@
 	};
 
 	i2c1_pins: i2c1 {
-		pinmux = <RZG2L_PORT_PINMUX(3,3,1)>, /* SCL1 */
-				 <RZG2L_PORT_PINMUX(3,2,1)>; /* SDA1 */
+		pinmux = <RZG2L_PORT_PINMUX(3, 2, 1)>, /* I2C1_SDA */
+			 <RZG2L_PORT_PINMUX(3, 3, 1)>; /* I2C1_SCL */
 	};
 
 	i2c8_pins: i2c8 {
@@ -226,14 +226,17 @@
         pinmux = <RZG2L_PORT_PINMUX(6,1,15)>, /* USB20_OVRCURN */
                  <RZG2L_PORT_PINMUX(6,0,15)>; /* USB20_VBUSEN */
     };
+
     usb21_pins: usb21 {
         pinmux = <RZG2L_PORT_PINMUX(6,3,15)>, /* USB21_OVRCURN */
                  <RZG2L_PORT_PINMUX(6,2,15)>; /* USB21_VBUSEN */
     };
+
     usb30_pins: usb30 {
         pinmux = <RZG2L_PORT_PINMUX(6,5,15)>, /* USB30_OVRCURN */
                  <RZG2L_PORT_PINMUX(6,4,15)>; /* USB30_VBUSEN */
     };
+
     usb31_pins: usb31 {
         pinmux = <RZG2L_PORT_PINMUX(6,7,15)>, /* USB31_OVRCURN */
                  <RZG2L_PORT_PINMUX(6,6,15)>; /* USB31_VBUSEN */
@@ -568,9 +571,10 @@
 		#sound-dai-cells = <0>;
 		compatible = "fsl,sgtl5000";
 		reg = <0xa>;
+		VDDA-supply = <&reg_3p3v>;
 		VDDIO-supply = <&reg_1p8v>;
-		VDDA-supply = <&reg_1p8v>;
 		VDDD-supply = <&reg_1p8v>;
-		clocks = <&clk_ext_audio>;
+		//clocks = <&clk_ext_audio>;
+		clocks = <&rcar_sound>;  // optional: provide MCLK
 	};
 };
