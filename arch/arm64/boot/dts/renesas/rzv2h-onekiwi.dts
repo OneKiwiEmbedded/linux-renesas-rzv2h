@@ -247,6 +247,8 @@
 				 <RZG2L_PORT_PINMUX(9,0,1)>, /* MOSIA */
 				 <RZG2L_PORT_PINMUX(9,2,1)>, /* RSPCKA */
 				 <RZG2L_PORT_PINMUX(9,3,1)>; /* SSLA0 */
+		bias-disable;
+        drive-strength = <2>;
 	};
 
 	sound_clk_pins: sound_clk {
@@ -553,7 +555,7 @@
 	tpm@0 {
 		compatible = "infineon,slb9670";
 		reg = <0>;                            // SPI chip-select 0
-		spi-max-frequency = <1000000>;        // Infineon khuyến nghị ≤ 1MHz
+		spi-max-frequency = <500000>;        // Infineon khuyến nghị ≤ 1MHz
 	};
 };
 
