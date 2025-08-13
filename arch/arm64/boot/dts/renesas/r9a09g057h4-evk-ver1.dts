@@ -1018,8 +1018,16 @@
 &spi2 {
 	pinctrl-0 = <&spi2_pins>;
 	pinctrl-names = "default";
-
 	status = "okay";
+	//dmas = <&dmac1 0x7F4C91>, <&dmac1 0x7F4C90>;
+	//dma-names = "tx", "rx";
+
+	slb9670: slb9670@0 {
+		compatible = "tcg,tpm_spi_tis";  // Sử dụng driver TPM SPI TIS
+		reg = <0>;                       // SPI chip-select 0
+		spi-max-frequency = <1000000>;   // Tốc độ SPI 10 MHz (có thể thử 8 MHz nếu gặp vấn đề)
+		status = "okay";
+	};
 };
 
 &xspi {
