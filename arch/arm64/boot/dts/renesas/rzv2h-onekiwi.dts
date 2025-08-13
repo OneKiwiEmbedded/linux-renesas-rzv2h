@@ -556,6 +556,10 @@
 		compatible = "infineon,slb9670";
 		reg = <0>;                            // SPI chip-select 0
 		spi-max-frequency = <500000>;        // Infineon khuyến nghị ≤ 1MHz
+		//interrupt-parent = <&pinctrl>;
+		interrupts = <&pinctrl RZG2L_GPIO(9, 6) IRQ_TYPE_LEVEL_HIGH>; // IRQ của TPM, bạn cần thay đổi số GPIO tương ứng
+        reset-gpios = <&pinctrl RZG2L_GPIO(9, 5) GPIO_ACTIVE_LOW>; // GPIO reset cho TPM, thay đổi tùy thuộc vào mạch của bạn
+		tpm,operating-mode = <1>;
 	};
 };
 
