@@ -179,6 +179,17 @@
 		};
 	};
 
+	hdmi-out {
+		compatible = "hdmi-connector";
+		type = "d";
+
+		port {
+			hdmi_con_out: endpoint {
+				remote-endpoint = <&adv7535_out>;
+			};
+		};
+	};
+
 	udmabuf@0 {
 		compatible = "ikwzm,u-dma-buf";
 		device-name = "udmabuf0";
@@ -201,72 +212,6 @@
 	clock-frequency = <22579200>;
 };
 
-&pinctrl {
-
-	scif0_pins: scif0 {
-		pins =  "SCIF_RXD", "SCIF_TXD";
-	};
-
-	sdhi1_pins: sd1 {
-		sd1_mux {
-			pinmux = <RZG2L_PORT_PINMUX(9, 4, 14)>; /* SD1_CD */
-		};
-	};
-
-	i2c1_pins: i2c1 {
-		pinmux = <RZG2L_PORT_PINMUX(3, 2, 1)>, /* I2C1_SDA */
-			 <RZG2L_PORT_PINMUX(3, 3, 1)>; /* I2C1_SCL */
-	};
-
-	i2c8_pins: i2c8 {
-		pinmux = <RZG2L_PORT_PINMUX(0, 6, 1)>, /* I2C8_SDA */
-				 <RZG2L_PORT_PINMUX(0, 7, 1)>; /* I2C8_SCL */
-	};
-
-	usb20_pins: usb20 {
-        pinmux = <RZG2L_PORT_PINMUX(6,1,15)>, /* USB20_OVRCURN */
-                 <RZG2L_PORT_PINMUX(6,0,15)>; /* USB20_VBUSEN */
-    };
-
-    usb21_pins: usb21 {
-        pinmux = <RZG2L_PORT_PINMUX(6,3,15)>, /* USB21_OVRCURN */
-                 <RZG2L_PORT_PINMUX(6,2,15)>; /* USB21_VBUSEN */
-    };
-
-    usb30_pins: usb30 {
-        pinmux = <RZG2L_PORT_PINMUX(6,5,15)>, /* USB30_OVRCURN */
-                 <RZG2L_PORT_PINMUX(6,4,15)>; /* USB30_VBUSEN */
-    };
-
-    usb31_pins: usb31 {
-        pinmux = <RZG2L_PORT_PINMUX(6,7,15)>, /* USB31_OVRCURN */
-                 <RZG2L_PORT_PINMUX(6,6,15)>; /* USB31_VBUSEN */
-    };
-
-	spi1_pins: spi1 {
-		pinmux = <RZG2L_PORT_PINMUX(9,1,1)>, /* MISOA */
-				 <RZG2L_PORT_PINMUX(9,0,1)>, /* MOSIA */
-				 <RZG2L_PORT_PINMUX(9,2,1)>, /* RSPCKA */
-				 <RZG2L_PORT_PINMUX(9,3,1)>; /* SSLA0 */
-		bias-disable;
-        drive-strength = <2>;
-	};
-
-	sound_clk_pins: sound_clk {
-		pinmux = <RZG2L_PORT_PINMUX(1, 0, 7)>, /* AUDIO_CLKB */
-			 <RZG2L_PORT_PINMUX(1, 1, 7)>, /* AUDIO_CLKC */
-			 <RZG2L_PORT_PINMUX(9, 7, 8)>; /* AUDIO_CLKOUT */
-	};
-
-	sound_pins: sound {
-		pinmux = <RZG2L_PORT_PINMUX(4,4,7)>, /* SSI1_SCK */
-				 <RZG2L_PORT_PINMUX(4,5,7)>, /* SSI1_WS */
-                 <RZG2L_PORT_PINMUX(4,6,7)>, /* SSI1_SDATA */
-				 <RZG2L_PORT_PINMUX(4,7,7)>; /* SSI2_SDATA */
-
-	};
-};
-
 &extal_clk {
 	clock-frequency = <24000000>;
 };
@@ -276,101 +221,6 @@
 };
 
 &ostm3 {
-	status = "okay";
-};
-
-/* console */
-&scif0 {
-	pinctrl-0 = <&scif0_pins>;
-	pinctrl-names = "default";
-	status = "okay";
-};
-
-/* eMMC */
-&sdhi0 {
-	vmmc-supply = <&reg_3p3v>;
-	vqmmc-supply = <&reg_1p8v>;
-	bus-width = <8>;
-	mmc-hs200-1_8v;
-	non-removable;
-	fixed-emmc-driver-type = <1>;
-	status = "okay";
-};
-
-/* microSD */
-&sdhi1 {
-	pinctrl-0 = <&sdhi1_pins>;
-	pinctrl-names = "default";
-	vmmc-supply = <&vmmc_sdhi1>;
-	vqmmc-supply = <&vccq_sdhi1>;
-	//vqmmc-supply = <&reg_1p8v>;
-	bus-width = <4>;
-	sd-uhs-sdr50;
-	sd-uhs-sdr104;
-	status = "okay";
-};
-
-&eth0 {
-	phy-handle = <&phy0>;
-	phy-mode = "rgmii-id";
-	status = "okay";
-
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		phy0: ethernet-phy@0 {
-			compatible = "ethernet-phy-id0022.1640",
-				     "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
-			rxc-skew-psec = <1400>;
-			txc-skew-psec = <1400>;
-			rxdv-skew-psec = <0>;
-			txdv-skew-psec = <0>;
-			rxd0-skew-psec = <0>;
-			rxd1-skew-psec = <0>;
-			rxd2-skew-psec = <0>;
-			rxd3-skew-psec = <0>;
-			txd0-skew-psec = <0>;
-			txd1-skew-psec = <0>;
-			txd2-skew-psec = <0>;
-			txd3-skew-psec = <0>;
-		};
-	};
-};
-
-&eth1 {
-	phy-handle = <&phy1>;
-	phy-mode = "rgmii-id";
-	status = "okay";
-
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		phy1: ethernet-phy@0 {
-			compatible = "ethernet-phy-id0022.1640",
-				     "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
-			rxc-skew-psec = <1400>;
-			txc-skew-psec = <1400>;
-			rxdv-skew-psec = <0>;
-			txdv-skew-psec = <0>;
-			rxd0-skew-psec = <0>;
-			rxd1-skew-psec = <0>;
-			rxd2-skew-psec = <0>;
-			rxd3-skew-psec = <0>;
-			txd0-skew-psec = <0>;
-			txd1-skew-psec = <0>;
-			txd2-skew-psec = <0>;
-			txd3-skew-psec = <0>;
-		};
-	};
-};
-
-&du {
-	status = "okay";
-};
-
-&dsi0 {
 	status = "okay";
 };
 
@@ -406,6 +256,180 @@
 	status = "okay";
 };
 
+&du {
+	status = "okay";
+};
+
+&dsi0 {
+	status = "okay";
+	ports {
+		port@1 {
+			dsi0_out: endpoint {
+				remote-endpoint = <&adv7535_in>;
+				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};
+
+&eth0 {
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii-id";
+	status = "okay";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		phy0: ethernet-phy@0 {
+			compatible = "ethernet-phy-id0022.1640",
+						 "ethernet-phy-ieee802.3-c22";
+			reg = <0>;
+			rxc-skew-psec = <1400>;
+			txc-skew-psec = <1400>;
+			rxdv-skew-psec = <0>;
+			txdv-skew-psec = <0>;
+			rxd0-skew-psec = <0>;
+			rxd1-skew-psec = <0>;
+			rxd2-skew-psec = <0>;
+			rxd3-skew-psec = <0>;
+			txd0-skew-psec = <0>;
+			txd1-skew-psec = <0>;
+			txd2-skew-psec = <0>;
+			txd3-skew-psec = <0>;
+		};
+	};
+};
+
+&eth1 {
+	phy-handle = <&phy1>;
+	phy-mode = "rgmii-id";
+	status = "okay";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		phy1: ethernet-phy@0 {
+			compatible = "ethernet-phy-id0022.1640",
+						 "ethernet-phy-ieee802.3-c22";
+			reg = <0>;
+			rxc-skew-psec = <1400>;
+			txc-skew-psec = <1400>;
+			rxdv-skew-psec = <0>;
+			txdv-skew-psec = <0>;
+			rxd0-skew-psec = <0>;
+			rxd1-skew-psec = <0>;
+			rxd2-skew-psec = <0>;
+			rxd3-skew-psec = <0>;
+			txd0-skew-psec = <0>;
+			txd1-skew-psec = <0>;
+			txd2-skew-psec = <0>;
+			txd3-skew-psec = <0>;
+		};
+	};
+};
+
+&i2c1 {
+	pinctrl-0 = <&i2c1_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	sgtl5000: audio-codec@a {
+		compatible = "fsl,sgtl5000";
+		#sound-dai-cells = <0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0xa>;
+
+		clocks = <&rcar_sound>;
+		clock-names = "mclk";
+
+		VDDA-supply = <&reg_3p3v>;
+		VDDIO-supply = <&reg_1p8v>;
+		VDDD-supply = <&reg_1p8v>;
+	};
+};
+
+&i2c8 {
+	pinctrl-0 = <&i2c8_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	adv7535: hdmi@3d {
+		compatible = "adi,adv7535";
+		reg = <0x3d>;
+
+		avdd-supply = <&reg_1p8v>;
+		dvdd-supply = <&reg_1p8v>;
+		pvdd-supply = <&reg_1p8v>;
+		a2vdd-supply = <&reg_1p8v>;
+		v3p3-supply = <&reg_3p3v>;
+		v1p2-supply = <&reg_1p8v>;
+
+		interrupt-parent = <&pinctrl>;
+		interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_LEVEL_LOW>;
+
+		adi,dsi-lanes = <4>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				adv7535_in: endpoint@0 {
+					remote-endpoint = <&dsi0_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				adv7535_out: endpoint@1 {
+				remote-endpoint = <&hdmi_con_out>;
+				};
+			};
+		};
+	};
+};
+
+/* console */
+&scif0 {
+	pinctrl-0 = <&scif0_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+/* eMMC */
+&sdhi0 {
+	vmmc-supply = <&reg_3p3v>;
+	vqmmc-supply = <&reg_1p8v>;
+	bus-width = <8>;
+	mmc-hs200-1_8v;
+	non-removable;
+	fixed-emmc-driver-type = <1>;
+	status = "okay";
+};
+
+/* microSD */
+&sdhi1 {
+	pinctrl-0 = <&sdhi1_pins>;
+	pinctrl-names = "default";
+	vmmc-supply = <&vmmc_sdhi1>;
+	vqmmc-supply = <&vccq_sdhi1>;
+	//vqmmc-supply = <&reg_1p8v>;
+	bus-width = <4>;
+	sd-uhs-sdr50;
+	sd-uhs-sdr104;
+	status = "okay";
+};
+
+&usb20phyrst {
+	status = "okay";
+};
+
+&usb21phyrst {
+	status = "okay";
+};
+
 &xhci0 {
 	pinctrl-0 = <&usb30_pins>;
 	pinctrl-names = "default";
@@ -417,14 +441,6 @@
 	pinctrl-0 = <&usb31_pins>;
 	pinctrl-names = "default";
 	memory-region = <&global_cma>;
-	status = "okay";
-};
-
-&usb20phyrst {
-	status = "okay";
-};
-
-&usb21phyrst {
 	status = "okay";
 };
 
@@ -559,7 +575,7 @@
 		spi-max-frequency = <500000>;        // Infineon khuyến nghị ≤ 1MHz
 		//interrupt-parent = <&pinctrl>;
 		interrupts = <&pinctrl RZG2L_GPIO(9, 6) IRQ_TYPE_LEVEL_HIGH>; // IRQ của TPM, bạn cần thay đổi số GPIO tương ứng
-        reset-gpios = <&pinctrl RZG2L_GPIO(9, 5) GPIO_ACTIVE_LOW>; // GPIO reset cho TPM, thay đổi tùy thuộc vào mạch của bạn
+		reset-gpios = <&pinctrl RZG2L_GPIO(9, 5) GPIO_ACTIVE_LOW>; // GPIO reset cho TPM, thay đổi tùy thuộc vào mạch của bạn
 		tpm,operating-mode = <1>;
 	};
 };
@@ -588,23 +604,66 @@
 	shared-pin;
 };
 
-&i2c1 {
-	pinctrl-0 = <&i2c1_pins>;
-	pinctrl-names = "default";
-	status = "okay";
+&pinctrl {
+	scif0_pins: scif0 {
+		pins =  "SCIF_RXD", "SCIF_TXD";
+	};
 
-	sgtl5000: audio-codec@a {
-		compatible = "fsl,sgtl5000";
-		#sound-dai-cells = <0>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		reg = <0xa>;
+	sdhi1_pins: sd1 {
+		sd1_mux {
+			pinmux = <RZG2L_PORT_PINMUX(9, 4, 14)>; /* SD1_CD */
+		};
+	};
 
-		clocks = <&rcar_sound>;
-		clock-names = "mclk";
+	i2c1_pins: i2c1 {
+		pinmux = <RZG2L_PORT_PINMUX(3, 2, 1)>, /* I2C1_SDA */
+				 <RZG2L_PORT_PINMUX(3, 3, 1)>; /* I2C1_SCL */
+	};
 
-		VDDA-supply = <&reg_3p3v>;
-		VDDIO-supply = <&reg_1p8v>;
-		VDDD-supply = <&reg_1p8v>;
+	i2c8_pins: i2c8 {
+		pinmux = <RZG2L_PORT_PINMUX(0, 6, 1)>, /* I2C8_SDA */
+				 <RZG2L_PORT_PINMUX(0, 7, 1)>; /* I2C8_SCL */
+	};
+
+	usb20_pins: usb20 {
+		pinmux = <RZG2L_PORT_PINMUX(6,1,15)>, /* USB20_OVRCURN */
+				 <RZG2L_PORT_PINMUX(6,0,15)>; /* USB20_VBUSEN */
+	};
+
+	usb21_pins: usb21 {
+		pinmux = <RZG2L_PORT_PINMUX(6,3,15)>, /* USB21_OVRCURN */
+				 <RZG2L_PORT_PINMUX(6,2,15)>; /* USB21_VBUSEN */
+	};
+
+	usb30_pins: usb30 {
+		pinmux = <RZG2L_PORT_PINMUX(6,5,15)>, /* USB30_OVRCURN */
+				 <RZG2L_PORT_PINMUX(6,4,15)>; /* USB30_VBUSEN */
+	};
+
+	usb31_pins: usb31 {
+		pinmux = <RZG2L_PORT_PINMUX(6,7,15)>, /* USB31_OVRCURN */
+				 <RZG2L_PORT_PINMUX(6,6,15)>; /* USB31_VBUSEN */
+	};
+
+	spi1_pins: spi1 {
+		pinmux = <RZG2L_PORT_PINMUX(9,1,1)>, /* MISOA */
+				 <RZG2L_PORT_PINMUX(9,0,1)>, /* MOSIA */
+				 <RZG2L_PORT_PINMUX(9,2,1)>, /* RSPCKA */
+				 <RZG2L_PORT_PINMUX(9,3,1)>; /* SSLA0 */
+		bias-disable;
+		drive-strength = <2>;
+	};
+
+	sound_clk_pins: sound_clk {
+		pinmux = <RZG2L_PORT_PINMUX(1, 0, 7)>, /* AUDIO_CLKB */
+			 <RZG2L_PORT_PINMUX(1, 1, 7)>, /* AUDIO_CLKC */
+			 <RZG2L_PORT_PINMUX(9, 7, 8)>; /* AUDIO_CLKOUT */
+	};
+
+	sound_pins: sound {
+		pinmux = <RZG2L_PORT_PINMUX(4,4,7)>, /* SSI1_SCK */
+				 <RZG2L_PORT_PINMUX(4,5,7)>, /* SSI1_WS */
+				 <RZG2L_PORT_PINMUX(4,6,7)>, /* SSI1_SDATA */
+				 <RZG2L_PORT_PINMUX(4,7,7)>; /* SSI2_SDATA */
 	};
 };
