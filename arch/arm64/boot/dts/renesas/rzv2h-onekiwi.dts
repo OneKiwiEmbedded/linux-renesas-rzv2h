@@ -354,6 +354,7 @@
 	pinctrl-names = "default";
 	status = "okay";
 
+	/*
 	adv7535: hdmi@3d {
 		compatible = "adi,adv7535";
 		reg = <0x3d>;
@@ -388,7 +389,37 @@
 				};
 			};
 		};
-	};
+	};*/
+
+	lt9611: hdmi-bridge@39 {
+        compatible = "lontium,lt9611";
+        reg = <0x39>;
+        reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
+		interrupt-parent = <&pinctrl>;
+		interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_LEVEL_LOW>;
+		//interrupts-extended = <&gpio2 7 IRQ_TYPE_EDGE_FALLING>;
+        vdd-supply = <&reg_1p8v>;
+        vcc-supply = <&reg_3p3v>;
+
+        ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				adv7535_in: endpoint@0 {
+					remote-endpoint = <&dsi0_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				adv7535_out: endpoint@1 {
+				remote-endpoint = <&hdmi_con_out>;
+				};
+			};
+		};
+    };
 };
 
 /* console */
