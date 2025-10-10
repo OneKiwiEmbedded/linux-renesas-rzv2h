@@ -258,8 +258,31 @@
 
 &du {
 	status = "okay";
+	ports {
+		port@0 { reg = <0>;
+			du_out0: endpoint { 
+				remote-endpoint = <&dsi0_in>;
+			};
+		};
+	};
 };
 
+&dsi0 {
+    status = "okay";
+    ports {
+        /* input từ DU */
+        port@0 { reg = <0>;
+            dsi0_in: endpoint { remote-endpoint = <&du_out0>; };
+        };
+        /* output sang LT8912B */
+        port@1 { reg = <1>;
+            dsi0_out: endpoint {
+                remote-endpoint = <&lt8912b_in>;
+                data-lanes = <0 1 2 3>;
+            };
+        };
+    };
+};
 /* adv7535
 &dsi0 {
 	status = "okay";
@@ -276,6 +299,12 @@
 &dsi0 {
 	status = "okay";
 	ports {
+		port@0 { reg = <0>;
+			dsi0_in: endpoint { 
+				remote-endpoint = <&du_out0>; 
+			};
+		};
+		
 		port@1 {
 			dsi0_out: endpoint {
 				remote-endpoint = <&adv7535_in>;
