@@ -260,6 +260,7 @@
 	status = "okay";
 };
 
+/* adv7535
 &dsi0 {
 	status = "okay";
 	ports {
@@ -267,6 +268,18 @@
 			dsi0_out: endpoint {
 				remote-endpoint = <&adv7535_in>;
 				data-lanes = <1 2 3 4>;
+			};
+		};
+	};
+};*/
+
+&dsi0 {
+	status = "okay";
+	ports {
+		port@1 {
+			dsi0_out: endpoint {
+				remote-endpoint = <&adv7535_in>;
+				data-lanes = <0 1 2 3>;
 			};
 		};
 	};
@@ -391,17 +404,17 @@
 		};
 	};*/
 
-	lt9611: hdmi-bridge@39 {
-        compatible = "lontium,lt9611";
-        reg = <0x39>;
-        reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
+	lt9611: hdmi-bridge@3b {
+		compatible = "lontium,lt9611";
+		reg = <0x3b>;
+		reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
 		interrupt-parent = <&pinctrl>;
 		interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_LEVEL_LOW>;
 		//interrupts-extended = <&gpio2 7 IRQ_TYPE_EDGE_FALLING>;
-        vdd-supply = <&reg_1p8v>;
-        vcc-supply = <&reg_3p3v>;
+		vdd-supply = <&reg_1p8v>;
+		vcc-supply = <&reg_3p3v>;
 
-        ports {
+		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
 
@@ -409,17 +422,18 @@
 				reg = <0>;
 				adv7535_in: endpoint@0 {
 					remote-endpoint = <&dsi0_out>;
+					data-lanes = <0 1 2 3>;
 				};
 			};
 
-			port@1 {
-				reg = <1>;
+			port@2 {
+				reg = <2>;
 				adv7535_out: endpoint@1 {
 				remote-endpoint = <&hdmi_con_out>;
 				};
 			};
 		};
-    };
+	};
 };
 
 /* console */
