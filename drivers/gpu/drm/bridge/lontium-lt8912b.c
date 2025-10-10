@@ -78,8 +78,7 @@ static int lt8912_write_init_config(struct lt8912 *lt)
 		{0x5a, 0x02},
 
 		/*MIPI Analog*/
-		//{0x3e, 0xd6},
-		{0x3e, 0xf6},
+		{0x3e, 0xd6},
 		{0x3f, 0xd4},
 		{0x41, 0x3c},
 		{0xB2, 0x00},
@@ -98,8 +97,7 @@ static int lt8912_write_mipi_basic_config(struct lt8912 *lt)
 		{0x1b, 0x03},
 	};
 
-	//return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-	return regmap_multi_reg_write(lt->regmap[I2C_MAIN], seq, ARRAY_SIZE(seq))
+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
 };
 
 static int lt8912_write_dds_config(struct lt8912 *lt)
@@ -152,8 +150,7 @@ static int lt8912_write_dds_config(struct lt8912 *lt)
 		{0x51, 0x00},
 	};
 
-	//return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-	return regmap_multi_reg_write(lt->regmap[I2C_MAIN], seq, ARRAY_SIZE(seq))
+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
 }
 
 static int lt8912_write_rxlogicres_config(struct lt8912 *lt)
@@ -190,8 +187,7 @@ static int lt8912_write_lvds_config(struct lt8912 *lt)
 		{0x03, 0xff},
 	};
 
-	//return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-	return regmap_multi_reg_write(lt->regmap[I2C_MAIN], seq, ARRAY_SIZE(seq))
+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
 };
 
 static inline struct lt8912 *bridge_to_lt8912(struct drm_bridge *b)
@@ -625,9 +621,7 @@ static int lt8912_parse_dt(struct lt8912 *lt)
 {
 	struct gpio_desc *gp_reset;
 	struct device *dev = lt->dev;
-	//int ret = 0;
-	int ret;
-	int data_lanes;
+	int ret = 0;
 	struct device_node *port_node;
 	struct device_node *endpoint;
 
@@ -641,29 +635,19 @@ static int lt8912_parse_dt(struct lt8912 *lt)
 	lt->gp_reset = gp_reset;
 
 	endpoint = of_graph_get_endpoint_by_regs(dev->of_node, 0, -1);
-	/*if (IS_ERR(endpoint)) {
+	if (IS_ERR(endpoint)) {
 		ret = PTR_ERR(endpoint);
 		goto end;
-	}*/
-
-	if (!endpoint)
-		return -ENODEV;
-
-	//lt->data_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
-	data_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
-	of_node_put(endpoint);
-	if (data_lanes < 0) {
-		dev_err(lt->dev, "%s: Bad data-lanes property\n", __func__);
-		return data_lanes;
 	}
-	lt->data_lanes = data_lanes;
+
+	lt->data_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
+	of_node_put(endpoint);
 
 	lt->host_node = of_graph_get_remote_node(dev->of_node, 0, -1);
 	if (!lt->host_node) {
 		dev_err(lt->dev, "%s: Failed to get remote port\n", __func__);
-		//ret = -ENODEV;
-		//goto end;
-		return -ENODEV;
+		ret = -ENODEV;
+		goto end;
 	}
 
 	port_node = of_graph_get_remote_node(dev->of_node, 1, -1);
@@ -674,30 +658,24 @@ static int lt8912_parse_dt(struct lt8912 *lt)
 	}
 
 	lt->hdmi_port = of_drm_find_bridge(port_node);
-	//if (IS_ERR(lt->hdmi_port)) {
-	if (!lt->hdmi_port) {
+	if (IS_ERR(lt->hdmi_port)) {
 		dev_err(lt->dev, "%s: Failed to get hdmi port\n", __func__);
-		//ret = PTR_ERR(lt->hdmi_port);
-		//of_node_put(lt->host_node);
-		//goto end;
-		ret = -EPROBE_DEFER;
-		goto err_free_host_node;
+		ret = PTR_ERR(lt->hdmi_port);
+		of_node_put(lt->host_node);
+		goto end;
 	}
 
 	if (!of_device_is_compatible(port_node, "hdmi-connector")) {
 		dev_err(lt->dev, "%s: Failed to get hdmi port\n", __func__);
 		ret = -EINVAL;
-		goto err_free_host_node;
 	}
 
 	of_node_put(port_node);
 
 end:
-	return 0;
-	//return ret;
+	return ret;
 
 err_free_host_node:
-	of_node_put(port_node);
 	of_node_put(lt->host_node);
 	return ret;
 }

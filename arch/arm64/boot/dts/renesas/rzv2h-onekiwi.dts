@@ -439,7 +439,7 @@
 	lt8912b: dsihdmi@48 {
 		compatible = "lontium,lt8912b";
 		reg = <0x48>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(11, 0) GPIO_ACTIVE_LOW>;
+		reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
 
 		ports {
 			#address-cells = <1>;
