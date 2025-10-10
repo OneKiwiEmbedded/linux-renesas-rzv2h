@@ -404,6 +404,7 @@
 		};
 	};*/
 
+	/*
 	lt9611: hdmi-bridge@3b {
 		compatible = "lontium,lt9611";
 		reg = <0x3b>;
@@ -430,6 +431,32 @@
 				reg = <2>;
 				adv7535_out: endpoint@1 {
 				remote-endpoint = <&hdmi_con_out>;
+				};
+			};
+		};
+	};*/
+
+	lt8912b: dsihdmi@48 {
+		compatible = "lontium,lt8912b";
+		reg = <0x48>;
+		reset-gpios = <&pinctrl RZG2L_GPIO(11, 0) GPIO_ACTIVE_LOW>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				adv7535_in: endpoint@0 {
+					data-lanes = <0 1 2 3>;
+					remote-endpoint = <&dsi0_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				adv7535_out: endpoint@1 {
+					remote-endpoint = <&hdmi_con_out>;
 				};
 			};
 		};
