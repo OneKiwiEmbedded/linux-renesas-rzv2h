@@ -16,6 +16,8 @@
 #include <drm/drm_of.h>
 
 #include <video/videomode.h>
+#include <video/of_display_timing.h>
+#include <drm/drm_modes.h>
 
 #define I2C_MAIN 0
 #define I2C_ADDR_MAIN 0x48
@@ -205,6 +207,40 @@ static const struct regmap_config lt8912_regmap_config = {
 	.val_bits = 8,
 	.max_register = 0xff,
 };
+
+static int lt8912_add_dt_mode(struct lt8912 *lt, struct drm_connector *connector)
+{
+	struct display_timing timing;
+	struct drm_display_mode *mode;
+	struct videomode vm;
+	int ret;
+
+	ret = of_get_display_timing(lt->dev->of_node, "timing-0", &timing);
+	if (ret) {
+		/* Nếu không có tên "timing-0", thử native-mode mặc định */
+		ret = of_get_display_timing(lt->dev->of_node, NULL, &timing);
+		if (ret)
+			return ret;
+	}
+
+	videomode_from_timing(&timing, &vm);
+
+	mode = drm_mode_create(connector->dev);
+	if (!mode)
+		return -ENOMEM;
+
+	drm_display_mode_from_videomode(&vm, mode);
+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+	drm_mode_probed_add(connector, mode);
+
+	/* đặt bus format RGB888 cho chắc */
+	{
+		u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+		drm_display_info_set_bus_formats(&connector->display_info, &bus_format, 1);
+	}
+
+	return 1; /* số mode thêm được */
+}
 
 static int lt8912_init_i2c(struct lt8912 *lt, struct i2c_client *client)
 {
@@ -410,6 +446,7 @@ lt8912_connector_mode_valid(struct drm_connector *connector,
 	return MODE_OK;
 }
 
+/*
 static int lt8912_connector_get_modes(struct drm_connector *connector)
 {
 	struct edid *edid;
@@ -433,6 +470,25 @@ static int lt8912_connector_get_modes(struct drm_connector *connector)
 
 	kfree(edid);
 	return num;
+}*/
+
+static int lt8912_connector_get_modes(struct drm_connector *connector)
+{
+	struct edid *edid;
+	int num = 0;
+	struct lt8912 *lt = connector_to_lt8912(connector);
+
+	edid = drm_bridge_get_edid(lt->hdmi_port, connector);
+	if (edid) {
+		drm_connector_update_edid_property(connector, edid);
+		num = drm_add_edid_modes(connector, edid);
+		kfree(edid);
+		return num;
+	}
+
+	/* EDID không có → thử lấy mode từ devicetree (display-timings) */
+	num = lt8912_add_dt_mode(lt, connector);
+	return num ? num : -1;
 }
 
 static const struct drm_connector_helper_funcs lt8912_connector_helper_funcs = {

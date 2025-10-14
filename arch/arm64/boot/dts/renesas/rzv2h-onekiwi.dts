@@ -283,18 +283,6 @@
         };
     };
 };
-/* adv7535
-&dsi0 {
-	status = "okay";
-	ports {
-		port@1 {
-			dsi0_out: endpoint {
-				remote-endpoint = <&adv7535_in>;
-				data-lanes = <1 2 3 4>;
-			};
-		};
-	};
-};*/
 
 &dsi0 {
 	status = "okay";
@@ -396,75 +384,6 @@
 	pinctrl-names = "default";
 	status = "okay";
 
-	/*
-	adv7535: hdmi@3d {
-		compatible = "adi,adv7535";
-		reg = <0x3d>;
-
-		avdd-supply = <&reg_1p8v>;
-		dvdd-supply = <&reg_1p8v>;
-		pvdd-supply = <&reg_1p8v>;
-		a2vdd-supply = <&reg_1p8v>;
-		v3p3-supply = <&reg_3p3v>;
-		v1p2-supply = <&reg_1p8v>;
-
-		interrupt-parent = <&pinctrl>;
-		interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_LEVEL_LOW>;
-
-		adi,dsi-lanes = <4>;
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-				adv7535_in: endpoint@0 {
-					remote-endpoint = <&dsi0_out>;
-				};
-			};
-
-			port@1 {
-				reg = <1>;
-				adv7535_out: endpoint@1 {
-				remote-endpoint = <&hdmi_con_out>;
-				};
-			};
-		};
-	};*/
-
-	/*
-	lt9611: hdmi-bridge@3b {
-		compatible = "lontium,lt9611";
-		reg = <0x3b>;
-		reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
-		interrupt-parent = <&pinctrl>;
-		interrupts = <RZG2L_GPIO(0, 1) IRQ_TYPE_LEVEL_LOW>;
-		//interrupts-extended = <&gpio2 7 IRQ_TYPE_EDGE_FALLING>;
-		vdd-supply = <&reg_1p8v>;
-		vcc-supply = <&reg_3p3v>;
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-				adv7535_in: endpoint@0 {
-					remote-endpoint = <&dsi0_out>;
-					data-lanes = <0 1 2 3>;
-				};
-			};
-
-			port@2 {
-				reg = <2>;
-				adv7535_out: endpoint@1 {
-				remote-endpoint = <&hdmi_con_out>;
-				};
-			};
-		};
-	};*/
-
 	lt8912b: dsihdmi@48 {
 		compatible = "lontium,lt8912b";
 		reg = <0x48>;
@@ -489,6 +408,27 @@
 				};
 			};
 		};
+
+		display-timings {
+            native-mode = <&tim_1280x800_60>;
+            tim_1280x800_60: timing-0 {
+                /* 1280x800@60 VESA (non-RB), pixel clock ~83.46 MHz */
+                clock-frequency = <83460000>;
+                hactive        = <1280>;
+                hfront-porch   = <72>;
+                hsync-len      = <128>;
+                hback-porch    = <200>;
+                vactive        = <800>;
+                vfront-porch   = <3>;
+                vsync-len      = <6>;
+                vback-porch    = <22>;
+                /* Modeline: -hsync +vsync */
+                hsync-active   = <0>;
+                vsync-active   = <1>;
+                de-active      = <1>;
+                pixelclk-active = <0>;
+            };
+        };
 	};
 };
 
