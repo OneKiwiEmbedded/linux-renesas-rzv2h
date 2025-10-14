@@ -409,23 +409,21 @@
 			};
 		};
 
-		display-timings {
-            native-mode = <&tim_1280x800_60>;
-            tim_1280x800_60: timing-0 {
-                /* 1280x800@60 VESA (non-RB), pixel clock ~83.46 MHz */
-                clock-frequency = <83460000>;
-                hactive        = <1280>;
-                hfront-porch   = <72>;
-                hsync-len      = <128>;
-                hback-porch    = <200>;
-                vactive        = <800>;
-                vfront-porch   = <3>;
-                vsync-len      = <6>;
-                vback-porch    = <22>;
-                /* Modeline: -hsync +vsync */
-                hsync-active   = <0>;
-                vsync-active   = <1>;
-                de-active      = <1>;
+		 display-timings {
+            native-mode = <&tim_wxga>;
+            tim_wxga: timing0 {
+                clock-frequency = <71000000>;   /* 1280x800@60 CVT-RB ~71.0 MHz */
+                hactive = <1280>;
+                vactive = <800>;
+                hfront-porch = <48>;
+                hsync-len    = <32>;
+                hback-porch  = <80>;
+                vfront-porch = <3>;
+                vsync-len    = <6>;
+                vback-porch  = <14>;
+                hsync-active = <0>;  /* negative */
+                vsync-active = <0>;  /* negative */
+                de-active    = <1>;
                 pixelclk-active = <0>;
             };
         };
