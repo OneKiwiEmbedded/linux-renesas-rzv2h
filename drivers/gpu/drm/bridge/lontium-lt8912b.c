@@ -759,12 +759,35 @@ static int lt8912_put_dt(struct lt8912 *lt)
 	return 0;
 }
 
+static int lt8912_detect(struct i2c_client *client)
+{
+    int idh, idl;
+
+    /* ví dụ: đọc 2 thanh ghi ID. Đổi sang đúng địa chỉ theo datasheet bạn dùng */
+    idh = i2c_smbus_read_byte_data(client, 0x00);
+    idl = i2c_smbus_read_byte_data(client, 0x01);
+    if (idh < 0 || idl < 0)
+        return -ENODEV;                 // NACK/không trả lời → không có chip
+
+    /* chặn kiểu bus rớt về 0x00/0xFF do floating */
+    if ((idh == 0x00 && idl == 0x00) || (idh == 0xFF && idl == 0xFF))
+        return -ENODEV;
+
+    /* nếu có giá trị ID kỳ vọng thì kiểm tra thêm:
+       if (((idh << 8) | idl) != 0x8912) return -ENODEV; */
+    return 0;
+}
+
 static int lt8912_probe(struct i2c_client *client,
 			const struct i2c_device_id *id)
 {
 	static struct lt8912 *lt;
 	int ret = 0;
 	struct device *dev = &client->dev;
+
+	ret = lt8912_detect(client);
+    if (ret)
+        return ret; // Không bind khi không có phần cứng
 
 	lt = devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL);
 	if (!lt)
