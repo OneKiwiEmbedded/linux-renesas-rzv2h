@@ -386,7 +386,7 @@
 
 		/* Reset và IRQ nếu có nối (đổi controller + chân cho đúng) */
 		reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
-		interrupts = <&pinctrl RZG2L_GPIO(0, 3) GPIO_ACTIVE_LOW>;
+		interrupts = <&pinctrl RZG2L_GPIO(0, 1) GPIO_ACTIVE_LOW>;
 
 		/* Nguồn cấp đúng tên theo binding */
 		vdd-supply = <&reg_1p8v>;  /* 1.8V */
