@@ -179,14 +179,12 @@
 		};
 	};
 
-	hdmi-out {
+	hdmi_con: hdmi-connector {
 		compatible = "hdmi-connector";
-		type = "d";
-		ddc-i2c-bus = <&i2c8>;
-
+		type = "a";
 		port {
-			hdmi_con_out: endpoint {
-				remote-endpoint = <&adv7535_out>;
+			hdmi_con_ep: endpoint {
+				remote-endpoint = <&lt9611_out>;
 			};
 		};
 	};
@@ -260,44 +258,40 @@
 &du {
 	status = "okay";
 	ports {
-		port@0 { reg = <0>;
-			du_out0: endpoint { 
+		#address-cells = <1>;
+		#size-cells = <0>;
+		/* Trên V2H, port@0 là DSI (không có DPI) */
+		port@0 {
+			reg = <0>;
+			du_out_dsi0: endpoint {
 				remote-endpoint = <&dsi0_in>;
 			};
 		};
 	};
 };
 
-&dsi0 {
-    status = "okay";
-    ports {
-        /* input từ DU */
-        port@0 { reg = <0>;
-            dsi0_in: endpoint { remote-endpoint = <&du_out0>; };
-        };
-        /* output sang LT8912B */
-        port@1 { reg = <1>;
-            dsi0_out: endpoint {
-                remote-endpoint = <&lt8912b_in>;
-                data-lanes = <0 1 2 3>;
-            };
-        };
-    };
-};
-
+/* DSI0 → LT9611 (chú ý data-lanes đánh số 1..4) */
 &dsi0 {
 	status = "okay";
 	ports {
-		port@0 { reg = <0>;
-			dsi0_in: endpoint { 
-				remote-endpoint = <&du_out0>; 
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		/* Input từ DU */
+		port@0 {
+			reg = <0>;
+			dsi0_in: endpoint {
+				remote-endpoint = <&du_out_dsi0>;
 			};
 		};
-		
+
+		/* Output đi LT9611 */
 		port@1 {
+			reg = <1>;
 			dsi0_out: endpoint {
-				remote-endpoint = <&adv7535_in>;
-				data-lanes = <0 1 2 3>;
+				/* 4 lanes: phải là <1 2 3 4>, KHÔNG phải <0 1 2 3> */
+				data-lanes = <1 2 3 4>;
+				remote-endpoint = <&lt9611_in>;
 			};
 		};
 	};
@@ -385,70 +379,35 @@
 	pinctrl-names = "default";
 	status = "okay";
 
-	lt8912b: dsihdmi@48 {
-		compatible = "lontium,lt8912b";
-		reg = <0x48>;
+	lt9611: hdmi-bridge@3b {
+		/* Nếu bạn scan thấy 0x39 thì đổi reg = <0x39>; */
+		compatible = "lontium,lt9611";
+		reg = <0x3b>;
+
+		/* Reset và IRQ nếu có nối (đổi controller + chân cho đúng) */
 		reset-gpios = <&pinctrl RZG2L_GPIO(0, 2) GPIO_ACTIVE_LOW>;
+		interrupts = <&pinctrl RZG2L_GPIO(0, 3) GPIO_ACTIVE_LOW>;
 
-		display-timings {
-			native-mode = <&timing0>;
-			timing0:timing0{
-				clock-frequency = <51200000>;
-
-				hactive = <1024>;
-				hsync-len = <20>;
-				hback-porch = <162>;
-				hfront-porch = <140>;
-				vactive = <600>;
-				vsync-len = <3>;
-				vback-porch = <20>;
-				vfront-porch = <12>;
-
-				vsync-active = <0>;
-				hsync-active =<0>;
-				de-active =<0>;
-				pixelclk-active =<0>;
-			};
-		};
+		/* Nguồn cấp đúng tên theo binding */
+		vdd-supply = <&reg_1p8v>;  /* 1.8V */
+		vcc-supply = <&reg_3p3v>;  /* 3.3V */
 
 		ports {
 			#address-cells = <1>;
 			#size-cells = <0>;
-
 			port@0 {
 				reg = <0>;
-				adv7535_in: endpoint@0 {
-					data-lanes = <0 1 2 3>;
+				lt9611_in: endpoint {
 					remote-endpoint = <&dsi0_out>;
 				};
 			};
-
 			port@1 {
 				reg = <1>;
-				adv7535_out: endpoint@1 {
-					remote-endpoint = <&hdmi_con_out>;
+				lt9611_out: endpoint {
+					remote-endpoint = <&hdmi_con_ep>;
 				};
 			};
 		};
-		/*
-		 display-timings {
-            native-mode = <&tim_wxga>;
-            tim_wxga: timing0 {
-                clock-frequency = <71000000>;   // 1280x800@60 CVT-RB ~71.0 MHz
-                hactive = <1280>;
-                vactive = <800>;
-                hfront-porch = <48>;
-                hsync-len    = <32>;
-                hback-porch  = <80>;
-                vfront-porch = <3>;
-                vsync-len    = <6>;
-                vback-porch  = <14>;
-                hsync-active = <0>;  // negative
-                vsync-active = <0>;  // negative
-                de-active    = <1>;
-                pixelclk-active = <0>;
-            };
-        };*/
 	};
 };
 
